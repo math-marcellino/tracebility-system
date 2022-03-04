@@ -1,6 +1,6 @@
 import { Interface } from "ethers/lib/utils";
 
-const contractInterface = new Interface([
+export const contractInterface = new Interface([
     // Read function
     "function isOwner()",
 
