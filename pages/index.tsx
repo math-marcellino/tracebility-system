@@ -2,8 +2,22 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
+import { ethers } from 'ethers'
+import { useProvider } from 'wagmi'
 
 const Home: NextPage = () => {
+  // Setup Wagmi Hooks
+  const provider = useProvider();
+
+  // Get Signer Private Key from Environment Variable
+  let signerPK = "";
+  if(process.env.NEXT_PUBLIC_SIGNER_PRIVATEKEY){
+    signerPK = process.env.NEXT_PUBLIC_SIGNER_PRIVATEKEY;
+  }
+
+  // Create wallet signer instance
+  const walletSigner = new ethers.Wallet(signerPK, provider);
+
   return (
     <div className={styles.container}>
       <Head>
