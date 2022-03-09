@@ -1,9 +1,10 @@
 import type { NextPage } from 'next'
 import { ethers } from 'ethers'
-import { useContract, useProvider, useContractWrite, useContractRead } from 'wagmi'
+import { useContract, useProvider} from 'wagmi'
 import {Box, Flex, Text, Button, Img, HStack, Stack, InputGroup, Input, Select} from '@chakra-ui/react'
 import { contractABIInterface } from '../abi/contractInterface'
 import { SubmitHandler, useForm } from 'react-hook-form'
+import { useEffect, useState } from 'react'
 
 type formData = {
   _nama: string,
@@ -47,13 +48,23 @@ const Home: NextPage = () => {
     signerOrProvider: walletSigner
   })
 
-  // Create Filter for querying events from smart contract
-  const filter = contractRead.filters.Trace();
+  const [data, setData] = useState([])
 
-  // Query events from smart contract (currently displayed on console.log)
-  const eventsData = contractRead.queryFilter(filter);
-  console.log(eventsData)
-  
+  useEffect(()=>{
+    const getData = async ()=>{
+      // Create Filter for querying events from smart contract
+      const filter = await contractRead.filters.Trace()
+      
+      // Query events from smart contract (currently displayed on console.log)
+      const eventsData = await contractRead.queryFilter(filter)
+
+      setData(eventsData)
+    }
+    getData()
+  }, [contractRead])
+ 
+  console.log(data)
+
   // Handle data from form & call createItem function from smart contract with walletSigner
   const submitData: SubmitHandler<formData> = async(data) => {
     const halalBool = data?._halal  == "true" ? true : false;
@@ -81,7 +92,7 @@ const Home: NextPage = () => {
               <Stack spacing={5}>
                 <Flex flex={{base: 1}} justify={'space-between'} pr={3} align={'center'} bgColor="#20242A" borderRadius={20}>
                   <InputGroup>
-                    <Input textColor="#B2B9D2" type="number" border={'none'} step={'any'} focusBorderColor={'none'} placeholder="Nama Makanan" min={0} {...register('_nama')}></Input>
+                    <Input textColor="#B2B9D2" type="text" border={'none'} focusBorderColor={'none'} placeholder="Nama Makanan" min={0} {...register('_nama')}></Input>
                   </InputGroup>
                 </Flex>
                 <Flex flex={{base: 1}} justify={'space-between'} pr={3} align={'center'} bgColor="#20242A" borderRadius={20}>
