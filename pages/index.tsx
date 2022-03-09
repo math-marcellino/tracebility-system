@@ -7,6 +7,8 @@ import { contractABIInterface } from '../abi/contractInterface'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useTraceEvents } from '../hooks/useTraceEvents'
 import { useState } from 'react'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 type formData = {
   _nama: string,
@@ -52,11 +54,16 @@ const Home: NextPage = () => {
 
   // Handle data from form & call createItem function from smart contract with walletSigner
   const submitData: SubmitHandler<formData> = async(data) => {
-    const halalBool = data?._halal  == "true" ? true : false;
-    setSubmitting(true)
-    const result = await contractWrite.createItem(data?._nama, data?._verifier, halalBool);
-    setSubmitting(false)
-    console.log(result)
+    try{
+      const halalBool = data?._halal  == "true" ? true : false;
+      setSubmitting(true)
+      const result = await contractWrite.createItem(data?._nama, data?._verifier, halalBool);
+      setSubmitting(false) 
+      toast.success(`Transaction is sucessfully submitted!`)
+    } catch(err){
+      setSubmitting(false)
+      toast.error(`${err}`)
+    }
   }
 
   return (
@@ -104,6 +111,18 @@ const Home: NextPage = () => {
           </Stack>
         </Flex>
       </Flex>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        style={{width: "350px"}}
+      />
     </Flex>
   )
 }

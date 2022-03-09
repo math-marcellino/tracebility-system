@@ -24,6 +24,7 @@ export function useTraceEvents(req: TraceEventsRequest){
         { contractAddress: req.contractAddress, provider: req.provider },
         TraceEventsFetcher
     );
+    
     return { 
         data: data, 
         isLoading: !data && !error,
