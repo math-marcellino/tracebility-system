@@ -6,6 +6,7 @@ import {Box, Flex, Text, Button, Img, HStack, Stack, InputGroup, Input, Select} 
 import { contractABIInterface } from '../abi/contractInterface'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useTraceEvents } from '../hooks/useTraceEvents'
+import { useState } from 'react'
 
 type formData = {
   _nama: string,
@@ -46,10 +47,15 @@ const Home: NextPage = () => {
     signerOrProvider: walletSigner
   })
 
+  // Create submitting form loading state
+  const [submitting, setSubmitting] = useState(false)
+
   // Handle data from form & call createItem function from smart contract with walletSigner
   const submitData: SubmitHandler<formData> = async(data) => {
     const halalBool = data?._halal  == "true" ? true : false;
+    setSubmitting(true)
     const result = await contractWrite.createItem(data?._nama, data?._verifier, halalBool);
+    setSubmitting(false)
     console.log(result)
   }
 
@@ -92,7 +98,7 @@ const Home: NextPage = () => {
                     <Input textColor="#B2B9D2" type="text" border={'none'} focusBorderColor={'none'} placeholder={'Pemverifikasi'} {...register('_verifier')}></Input>
                   </InputGroup>
                 </Flex>
-                <Button colorScheme={'blue'} type="submit" borderRadius={20}>Confirm</Button>
+                <Button isLoading={submitting} colorScheme={'blue'} type="submit" borderRadius={20}>Confirm</Button>
               </Stack>
             </form>
           </Stack>
