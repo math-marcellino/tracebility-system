@@ -9,6 +9,7 @@ import { useTraceEvents } from '../hooks/useTraceEvents'
 import { useState } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import MUIDataTable from "mui-datatables";
 
 type formData = {
   _nama: string,
@@ -66,51 +67,109 @@ const Home: NextPage = () => {
     }
   }
 
+  // Create data array for MUI table
+  const tableData:any = events.data?.map((item) => {
+    const date = new Date(item.args?._time.toNumber() * 1000)
+    const formattedDate = new Intl.DateTimeFormat("en-US", { hour: "numeric", day: "numeric", month: "short", year: "numeric", minute: "numeric" }).format(date);
+    return {
+      date: formattedDate,
+      itemID: item.args?._itemID.toNumber(),
+      step: item.args?._step.toNumber(),
+      verifiers: item.args?.verifiers,
+      halal: item.args?._halal
+    }
+  })
+
+  const columns = [
+    {
+      name: "date",
+      label: "Date",
+    },
+    {
+      name: "itemID",
+      label: "Makanan",
+    },
+    {
+      name: "step",
+      label: "Step",
+    },
+    {
+      name: "verifiers",
+      label: "Pemverifikasi",
+    },
+    {
+      name: "halal",
+      label: "Status Kehalalan",
+      options: {
+        customBodyRender: (value:any) => {
+          return (
+            <Flex justifyContent={'center'} alignItems='center'>
+              <Img w={'30px'} src={!value ? "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Flat_cross_icon.svg/1024px-Flat_cross_icon.svg.png " : "https://upload.wikimedia.org/wikipedia/commons/c/c6/Sign-check-icon.png"}></Img>
+            </Flex>
+          )
+        }
+      }
+    },
+  ]
+
   return (
-    <Flex height={'100vh'} justify='center' align={'center'}>
+    <Flex height={'100%'} justify='center' align={'center'} direction={'column'} pb={'10px'} pt={'100px'}>
       <Head>
           {/* <!-- HTML Meta Tags --> */}
           <title>Tracebility System</title>
           <meta name="description" content="Halal supply chain tracebility system using blockchain" />
       </Head>
-      <Flex justify={'center'} align={'center'}>
-        <Flex
-          borderRadius={30}
-          bgColor="#191B1F"
-          w="30rem"
-          py={4}
-          pb={8}
-          px={6}
-          direction={'column'}
-        >
-          <Stack spacing={5}>
-            <Flex flex={{base: 1}} justify={'space-between'} align={'center'}>
-              <Text>Input Data</Text>
-            </Flex>
-            <form autoComplete="off" onSubmit={handleSubmit(submitData)}>
-              <Stack spacing={5}>
-                <Flex flex={{base: 1}} justify={'space-between'} pr={3} align={'center'} bgColor="#20242A" borderRadius={20}>
-                  <InputGroup>
-                    <Input textColor="#B2B9D2" type="text" border={'none'} focusBorderColor={'none'} placeholder="Nama Makanan" min={0} {...register('_nama')}></Input>
-                  </InputGroup>
-                </Flex>
-                <Flex flex={{base: 1}} justify={'space-between'} pr={3} align={'center'} bgColor="#20242A" borderRadius={20}>
-                  <Select placeholder='Status Kehalalan' border={'none'} {...register('_halal')}>
-                    <option value='true'>Halal</option>
-                    <option value='false'>Non Halal</option>
-                  </Select>
-                </Flex>
-                <Flex flex={{base: 1}} justify={'space-between'} pr={3} align={'center'} bgColor="#20242A" borderRadius={20}>
-                  <InputGroup>
-                    <Input textColor="#B2B9D2" type="text" border={'none'} focusBorderColor={'none'} placeholder={'Pemverifikasi'} {...register('_verifier')}></Input>
-                  </InputGroup>
-                </Flex>
-                <Button isLoading={submitting} colorScheme={'blue'} type="submit" borderRadius={20}>Confirm</Button>
-              </Stack>
-            </form>
-          </Stack>
+      <Stack spacing={10}>      
+        <Flex justify={'center'} align={'center'}>
+          <Flex
+            borderRadius={30}
+            bgColor="#191B1F"
+            w="30rem"
+            py={4}
+            pb={8}
+            px={6}
+            direction={'column'}
+          >
+            <Stack spacing={5}>
+              <Flex flex={{base: 1}} justify={'space-between'} align={'center'}>
+                <Text>Input Data</Text>
+              </Flex>
+              <form autoComplete="off" onSubmit={handleSubmit(submitData)}>
+                <Stack spacing={5}>
+                  <Flex flex={{base: 1}} justify={'space-between'} pr={3} align={'center'} bgColor="#20242A" borderRadius={20}>
+                    <InputGroup>
+                      <Input textColor="#B2B9D2" type="text" border={'none'} focusBorderColor={'none'} placeholder="Nama Makanan" min={0} {...register('_nama')}></Input>
+                    </InputGroup>
+                  </Flex>
+                  <Flex flex={{base: 1}} justify={'space-between'} pr={3} align={'center'} bgColor="#20242A" borderRadius={20}>
+                    <Select placeholder='Status Kehalalan' border={'none'} {...register('_halal')}>
+                      <option value='true'>Halal</option>
+                      <option value='false'>Non Halal</option>
+                    </Select>
+                  </Flex>
+                  <Flex flex={{base: 1}} justify={'space-between'} pr={3} align={'center'} bgColor="#20242A" borderRadius={20}>
+                    <InputGroup>
+                      <Input textColor="#B2B9D2" type="text" border={'none'} focusBorderColor={'none'} placeholder={'Pemverifikasi'} {...register('_verifier')}></Input>
+                    </InputGroup>
+                  </Flex>
+                  <Button isLoading={submitting} colorScheme={'blue'} type="submit" borderRadius={20}>Confirm</Button>
+                </Stack>
+              </form>
+            </Stack>
+          </Flex>
         </Flex>
-      </Flex>
+        <MUIDataTable
+          title={"Employee List"}
+          data={tableData}
+          columns={columns}
+          options={{
+            selectableRows: "none",
+            rowsPerPage: 8,
+            elevation: 0,
+            sort: false
+          }}
+        />
+      </Stack>
       <ToastContainer
         position="bottom-right"
         autoClose={5000}
