@@ -1,4 +1,5 @@
 import type { NextPage } from 'next'
+import Head from 'next/head'
 import { ethers } from 'ethers'
 import { useContract, useProvider} from 'wagmi'
 import {Box, Flex, Text, Button, Img, HStack, Stack, InputGroup, Input, Select} from '@chakra-ui/react'
@@ -54,6 +55,11 @@ const Home: NextPage = () => {
 
   return (
     <Flex height={'100vh'} justify='center' align={'center'}>
+      <Head>
+          {/* <!-- HTML Meta Tags --> */}
+          <title>Tracebility System</title>
+          <meta name="description" content="Halal supply chain tracebility system using blockchain" />
+      </Head>
       <Flex justify={'center'} align={'center'}>
         <Flex
           borderRadius={30}
