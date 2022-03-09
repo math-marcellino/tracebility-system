@@ -4,7 +4,7 @@ import { useContract, useProvider} from 'wagmi'
 import {Box, Flex, Text, Button, Img, HStack, Stack, InputGroup, Input, Select} from '@chakra-ui/react'
 import { contractABIInterface } from '../abi/contractInterface'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { useEffect, useState } from 'react'
+import { useTraceEvents } from '../hooks/useTraceEvents'
 
 type formData = {
   _nama: string,
@@ -31,39 +31,19 @@ const Home: NextPage = () => {
     contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
   }
 
+  // Get Trace events uing useTraceEvents custom hook
+  const events = useTraceEvents({ contractAddress: contractAddress, provider: provider})
+  console.log(events)
+
   // Create wallet signer instance
   const walletSigner = new ethers.Wallet(signerPK, provider);
-  console.log("owner address:", walletSigner.address)
 
-  // Create Smart Contract Instance for read and write
-  const contractRead = useContract({
-    addressOrName: contractAddress,
-    contractInterface: contractABIInterface,
-    signerOrProvider: provider
-  })
-
+  // Create Smart Contract Instance for write (using walletSigner)
   const contractWrite = useContract({
     addressOrName: contractAddress,
     contractInterface: contractABIInterface,
     signerOrProvider: walletSigner
   })
-
-  const [data, setData] = useState([])
-
-  useEffect(()=>{
-    const getData = async ()=>{
-      // Create Filter for querying events from smart contract
-      const filter = await contractRead.filters.Trace()
-      
-      // Query events from smart contract (currently displayed on console.log)
-      const eventsData = await contractRead.queryFilter(filter)
-
-      setData(eventsData)
-    }
-    getData()
-  }, [contractRead])
- 
-  console.log(data)
 
   // Handle data from form & call createItem function from smart contract with walletSigner
   const submitData: SubmitHandler<formData> = async(data) => {
