@@ -1,4 +1,4 @@
-import {Box, Flex, Img, Menu, MenuButton, MenuList, MenuItem, Button} from '@chakra-ui/react'
+import {Flex, Img, Menu, MenuButton, MenuList, MenuItem, Button, Text} from '@chakra-ui/react'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useTraceEvents } from '../hooks/useTraceEvents'
@@ -6,7 +6,6 @@ import MUIDataTable from "mui-datatables";
 import { ethers } from 'ethers'
 import { useContract, useProvider} from 'wagmi'
 import { contractABIInterface } from '../abi/contractInterface'
-
 
 const Table = () => {
   // Setup Wagmi Hooks
@@ -34,11 +33,29 @@ const Table = () => {
     return {
       date: formattedDate,
       itemID: item.args?._itemID.toNumber(),
-      step: item.args?._step.toNumber(),
+      step: item.args?._step.toNumber()+1,
       verifiers: item.args?.verifiers,
       halal: item.args?._halal
     }
   })
+
+  const walletSigner = new ethers.Wallet(signerPK, provider);
+
+  // Create Smart Contract Instance for write (using walletSigner)
+  const contractWrite = useContract({
+    addressOrName: contractAddress,
+    contractInterface: contractABIInterface,
+    signerOrProvider: walletSigner
+  })
+  
+  // const changeStep = async (step:Number, itemID:Number, halal:Boolean)=>{
+  //   try{
+  //     const result = await contractWrite.step2(itemID, "William", halal)
+  //     console.log(result)
+  //   } catch(err){
+  //     console.log(err)
+  //   }
+  // }
 
   const columns = [
     {
@@ -70,6 +87,28 @@ const Table = () => {
         }
       }
     },
+    // {
+    //   name: "stepButton",
+    //   label: "Change Step",
+    //   options: {
+    //     customBodyRender: (dataIndex:any, rowIndex:any) => {
+    //       return (
+    //         <Flex justifyContent={'center'} alignItems='center'>
+    //           <Menu>
+    //             <MenuButton as={Button} size={'sm'} bgColor='#172a42' textColor='white' borderRadius={'10px'} _hover={{bgColor: "#1a4173"}}>
+    //               Step Menu
+    //             </MenuButton>
+    //             <MenuList bgColor={'white'}>
+    //               <MenuItem _hover={{bgColor: 'blackAlpha.100'}} onClick={()=>{changeStep(2, rowIndex.rowData[1], rowIndex.rowData[4])}}>Step 2</MenuItem>
+    //               <MenuItem _hover={{bgColor: 'blackAlpha.100'}} onClick={()=>{changeStep(3, rowIndex.rowData[1], rowIndex.rowData[4])}}>Step 3</MenuItem>
+    //               <MenuItem _hover={{bgColor: 'blackAlpha.100'}} onClick={()=>{changeStep(4, rowIndex.rowData[1], rowIndex.rowData[4])}}>Step 4</MenuItem>
+    //             </MenuList>
+    //           </Menu>
+    //         </Flex>
+    //       )
+    //     }
+    //   }
+    // }
   ]
 
   return (
@@ -79,16 +118,19 @@ const Table = () => {
         <title>Tracebility System</title>
         <meta name="description" content="Halal supply chain tracebility system using blockchain" />
       </Head>
-      <Flex position={'fixed'} top="10" left="10">
+      <Flex position={'fixed'} top="10" w="100%" justifyContent='space-between' pr={'50px'} pl={'50px'}>
         <Menu>
           <MenuButton as={Button}>
             Menu :
           </MenuButton>
           <MenuList>
+          <Link href={'/'} passHref><MenuItem>Create Item</MenuItem></Link>
             <Link href={'/table'} passHref><MenuItem>Table</MenuItem></Link>
-            <Link href={'/'} passHref><MenuItem>Create Item</MenuItem></Link>
           </MenuList>
         </Menu> 
+        <Flex alignItems={'center'}>
+          <Text>William Chandra</Text>
+        </Flex>
       </Flex>
       <MUIDataTable
         title={"Employee List"}

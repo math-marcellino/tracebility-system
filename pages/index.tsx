@@ -58,7 +58,7 @@ const Home: NextPage = () => {
     try{
       const halalBool = data?._halal  == "true" ? true : false;
       setSubmitting(true)
-      const result = await contractWrite.createItem(data?._nama, data?._verifier, halalBool);
+      await contractWrite.createItem(data?._nama, "William Chandra", halalBool)
       setSubmitting(false) 
       toast.success(`Transaction is sucessfully submitted!`)
     } catch(err){
@@ -67,51 +67,6 @@ const Home: NextPage = () => {
     }
   }
 
-  // Create data array for MUI table
-  const tableData:any = events.data?.map((item) => {
-    const date = new Date(item.args?._time.toNumber() * 1000)
-    const formattedDate = new Intl.DateTimeFormat("en-US", { hour: "numeric", day: "numeric", month: "short", year: "numeric", minute: "numeric" }).format(date);
-    return {
-      date: formattedDate,
-      itemID: item.args?._itemID.toNumber(),
-      step: item.args?._step.toNumber(),
-      verifiers: item.args?.verifiers,
-      halal: item.args?._halal
-    }
-  })
-
-  const columns = [
-    {
-      name: "date",
-      label: "Date",
-    },
-    {
-      name: "itemID",
-      label: "Makanan",
-    },
-    {
-      name: "step",
-      label: "Step",
-    },
-    {
-      name: "verifiers",
-      label: "Pemverifikasi",
-    },
-    {
-      name: "halal",
-      label: "Status Kehalalan",
-      options: {
-        customBodyRender: (value:any) => {
-          return (
-            <Flex justifyContent={'center'} alignItems='center'>
-              <Img w={'30px'} src={!value ? "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Flat_cross_icon.svg/1024px-Flat_cross_icon.svg.png " : "https://upload.wikimedia.org/wikipedia/commons/c/c6/Sign-check-icon.png"}></Img>
-            </Flex>
-          )
-        }
-      }
-    },
-  ]
-
   return (
     <Flex height={'100vh'} justify='center' align={'center'} direction={'column'} bgColor={'#1a202c'}>
       <Head>
@@ -119,18 +74,20 @@ const Home: NextPage = () => {
         <title>Tracebility System</title>
         <meta name="description" content="Halal supply chain tracebility system using blockchain" />
       </Head>  
-      <Flex position={'fixed'} top="10" left="10">
+      <Flex position={'fixed'} top="10" w="100%" justifyContent='space-between' pr={'50px'} pl={'50px'}>
         <Menu>
           <MenuButton as={Button}>
             Menu :
           </MenuButton>
           <MenuList>
+          <Link href={'/'} passHref><MenuItem>Create Item</MenuItem></Link>
             <Link href={'/table'} passHref><MenuItem>Table</MenuItem></Link>
-            <Link href={'/'} passHref><MenuItem>Create Item</MenuItem></Link>
           </MenuList>
         </Menu> 
+        <Flex alignItems={'center'}>
+          <Text>William Chandra</Text>
+        </Flex>
       </Flex>
- 
       <Flex justify={'center'} align={'center'}>
         <Flex
           borderRadius={30}
@@ -149,20 +106,20 @@ const Home: NextPage = () => {
               <Stack spacing={5}>
                 <Flex flex={{base: 1}} justify={'space-between'} pr={3} align={'center'} bgColor="#20242A" borderRadius={20}>
                   <InputGroup>
-                    <Input textColor="#B2B9D2" type="text" border={'none'} focusBorderColor={'none'} placeholder="Nama Makanan" min={0} {...register('_nama')}></Input>
+                    <Input textColor="#B2B9D2" type="text" border={'none'} focusBorderColor={'none'} placeholder={errors._nama ? errors._nama.message : "Nama Makanan"} min={0} {...register('_nama', {required: "Makanan Harap Diisi!"})}></Input>
                   </InputGroup>
                 </Flex>
                 <Flex flex={{base: 1}} justify={'space-between'} pr={3} align={'center'} bgColor="#20242A" borderRadius={20}>
-                  <Select placeholder='Status Kehalalan' border={'none'} {...register('_halal')} textColor="white">
+                  <Select placeholder='Status Kehalalan' border={'none'} {...register('_halal')} textColor="white" focusBorderColor='none'>
                     <option value='true'>Halal</option>
                     <option value='false'>Non Halal</option>
                   </Select>
                 </Flex>
-                <Flex flex={{base: 1}} justify={'space-between'} pr={3} align={'center'} bgColor="#20242A" borderRadius={20}>
+                {/* <Flex flex={{base: 1}} justify={'space-between'} pr={3} align={'center'} bgColor="#20242A" borderRadius={20}>
                   <InputGroup>
-                    <Input textColor="#B2B9D2" type="text" border={'none'} focusBorderColor={'none'} placeholder={'Pemverifikasi'} {...register('_verifier')}></Input>
+                    <Input textColor="#B2B9D2" type="text" border={'none'} focusBorderColor={'none'} placeholder={'Pemverifikasi'} {...register('_verifier', {required: "Pemverifikasi Harap Diisi!"})}></Input>
                   </InputGroup>
-                </Flex>
+                </Flex> */}
                 <Button isLoading={submitting} colorScheme={'blue'} type="submit" borderRadius={20}>Confirm</Button>
               </Stack>
             </form>
