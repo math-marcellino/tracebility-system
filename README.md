@@ -1,34 +1,32 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Melakukan Preview Website
 
-## Getting Started
+Untuk menginstall dependency pada project, maka jalankan command berikut:
+```
+npm install
+```
 
-First, run the development server:
+Setelah seluruh dependecy terinstall, maka development server dan preview website secara local dapat dilakukan. Bukalah terminal pada folder `tracebility-system`, lalu jalankan command berikut:
 
 ```bash
 npm run dev
-# or
-yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Setelah itu, bukalah [http://localhost:3000](http://localhost:3000) melalui browser untuk melihat hasil.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Fungsionalitas
+### 1. Menambah Data Supply Chain
+Pada halaman utama, terdapat sebuah form untuk menambahkan data baru dan menyimpannya ke dalam smart contract pada jaringan Polygon (saat ini `Mumbai Testnet`, yaitu testnet dari `Polygon Mainnet`)
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+![image](https://user-images.githubusercontent.com/81855912/157589350-548e70f8-7c96-431b-8e25-f5336c5999fc.png)
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+Ketika form telah diisi dan tombol submit ditekan, maka secara otomatis sistem akan meng-submit transaksi pada jaringan blockchain `Mumbai Testnet` menggunakan wallet dengan private key yang sudah didefinisikan dalam `.env`. Jika transaksi tersebut telah terkonfirmasi dalam beberapa block, maka data kemudian akan muncul di dalam tabel.
 
-## Learn More
+### 2. Tracing Data Supply Chain
+Pada bagian bawah form, terdapat sebuah tabel yang menampilkan log dari seluruh transaksi penambahan data pada smart contract yang pernah terjadi.
 
-To learn more about Next.js, take a look at the following resources:
+![image](https://user-images.githubusercontent.com/81855912/157590077-207238cd-44ea-416b-92a9-7ca6fe5d0db1.png)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Note: Saat ini tabel masih menampilkan hanya ID makanan saja, tetapi untuk kedepannya smart contract akan diupdate agar dapat langsung menampilkan nama makanannya.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## TODO
+#### 1. Menambahkan kolom berissi tombol `Update` pada tabel untuk data yang memiliki step 0-2 (karena step 3 merupakan tujuan akhir dari supply chain). Ketika tombol update ditekan, maka akan ditampilkan sebuah form untuk mengupdate kehalalan dari item tertentu beserta dengan pemverifikasinya.
