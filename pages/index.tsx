@@ -1,8 +1,9 @@
 import type { NextPage } from 'next'
+import Link from 'next/link'
 import Head from 'next/head'
 import { ethers } from 'ethers'
 import { useContract, useProvider} from 'wagmi'
-import {Box, Flex, Text, Button, Img, HStack, Stack, InputGroup, Input, Select} from '@chakra-ui/react'
+import {Flex, Text, Button, Img, Stack, InputGroup, Input, Select, Menu, MenuButton, MenuList, MenuItem} from '@chakra-ui/react'
 import { contractABIInterface } from '../abi/contractInterface'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useTraceEvents } from '../hooks/useTraceEvents'
@@ -38,7 +39,6 @@ const Home: NextPage = () => {
 
   // Get Trace events uing useTraceEvents custom hook
   const events = useTraceEvents({ contractAddress: contractAddress, provider: provider})
-  console.log(events)
 
   // Create wallet signer instance
   const walletSigner = new ethers.Wallet(signerPK, provider);
@@ -113,63 +113,62 @@ const Home: NextPage = () => {
   ]
 
   return (
-    <Flex height={'100%'} justify='center' align={'center'} direction={'column'} pb={'10px'} pt={'100px'}>
+    <Flex height={'100vh'} justify='center' align={'center'} direction={'column'} bgColor={'#1a202c'}>
       <Head>
-          {/* <!-- HTML Meta Tags --> */}
-          <title>Tracebility System</title>
-          <meta name="description" content="Halal supply chain tracebility system using blockchain" />
-      </Head>
-      <Stack spacing={10}>      
-        <Flex justify={'center'} align={'center'}>
-          <Flex
-            borderRadius={30}
-            bgColor="#191B1F"
-            w="30rem"
-            py={4}
-            pb={8}
-            px={6}
-            direction={'column'}
-          >
-            <Stack spacing={5}>
-              <Flex flex={{base: 1}} justify={'space-between'} align={'center'}>
-                <Text>Input Data</Text>
-              </Flex>
-              <form autoComplete="off" onSubmit={handleSubmit(submitData)}>
-                <Stack spacing={5}>
-                  <Flex flex={{base: 1}} justify={'space-between'} pr={3} align={'center'} bgColor="#20242A" borderRadius={20}>
-                    <InputGroup>
-                      <Input textColor="#B2B9D2" type="text" border={'none'} focusBorderColor={'none'} placeholder="Nama Makanan" min={0} {...register('_nama')}></Input>
-                    </InputGroup>
-                  </Flex>
-                  <Flex flex={{base: 1}} justify={'space-between'} pr={3} align={'center'} bgColor="#20242A" borderRadius={20}>
-                    <Select placeholder='Status Kehalalan' border={'none'} {...register('_halal')}>
-                      <option value='true'>Halal</option>
-                      <option value='false'>Non Halal</option>
-                    </Select>
-                  </Flex>
-                  <Flex flex={{base: 1}} justify={'space-between'} pr={3} align={'center'} bgColor="#20242A" borderRadius={20}>
-                    <InputGroup>
-                      <Input textColor="#B2B9D2" type="text" border={'none'} focusBorderColor={'none'} placeholder={'Pemverifikasi'} {...register('_verifier')}></Input>
-                    </InputGroup>
-                  </Flex>
-                  <Button isLoading={submitting} colorScheme={'blue'} type="submit" borderRadius={20}>Confirm</Button>
-                </Stack>
-              </form>
-            </Stack>
-          </Flex>
+        {/* <!-- HTML Meta Tags --> */}
+        <title>Tracebility System</title>
+        <meta name="description" content="Halal supply chain tracebility system using blockchain" />
+      </Head>  
+      <Flex position={'fixed'} top="10" left="10">
+        <Menu>
+          <MenuButton as={Button}>
+            Menu :
+          </MenuButton>
+          <MenuList>
+            <Link href={'/table'} passHref><MenuItem>Table</MenuItem></Link>
+            <Link href={'/'} passHref><MenuItem>Create Item</MenuItem></Link>
+          </MenuList>
+        </Menu> 
+      </Flex>
+ 
+      <Flex justify={'center'} align={'center'}>
+        <Flex
+          borderRadius={30}
+          bgColor="#191B1F"
+          w="30rem"
+          py={4}
+          pb={8}
+          px={6}
+          direction={'column'}
+        >
+          <Stack spacing={5}>
+            <Flex flex={{base: 1}} justify={'space-between'} align={'center'}>
+              <Text textColor={'white'}>Input Data</Text>
+            </Flex>
+            <form autoComplete="off" onSubmit={handleSubmit(submitData)}>
+              <Stack spacing={5}>
+                <Flex flex={{base: 1}} justify={'space-between'} pr={3} align={'center'} bgColor="#20242A" borderRadius={20}>
+                  <InputGroup>
+                    <Input textColor="#B2B9D2" type="text" border={'none'} focusBorderColor={'none'} placeholder="Nama Makanan" min={0} {...register('_nama')}></Input>
+                  </InputGroup>
+                </Flex>
+                <Flex flex={{base: 1}} justify={'space-between'} pr={3} align={'center'} bgColor="#20242A" borderRadius={20}>
+                  <Select placeholder='Status Kehalalan' border={'none'} {...register('_halal')} textColor="white">
+                    <option value='true'>Halal</option>
+                    <option value='false'>Non Halal</option>
+                  </Select>
+                </Flex>
+                <Flex flex={{base: 1}} justify={'space-between'} pr={3} align={'center'} bgColor="#20242A" borderRadius={20}>
+                  <InputGroup>
+                    <Input textColor="#B2B9D2" type="text" border={'none'} focusBorderColor={'none'} placeholder={'Pemverifikasi'} {...register('_verifier')}></Input>
+                  </InputGroup>
+                </Flex>
+                <Button isLoading={submitting} colorScheme={'blue'} type="submit" borderRadius={20}>Confirm</Button>
+              </Stack>
+            </form>
+          </Stack>
         </Flex>
-        <MUIDataTable
-          title={"Employee List"}
-          data={tableData}
-          columns={columns}
-          options={{
-            selectableRows: "none",
-            rowsPerPage: 8,
-            elevation: 0,
-            sort: false
-          }}
-        />
-      </Stack>
+      </Flex>
       <ToastContainer
         position="bottom-right"
         autoClose={5000}
