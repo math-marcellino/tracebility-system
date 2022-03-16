@@ -1,4 +1,4 @@
-import {Flex, Img, Menu, MenuButton, MenuList, MenuItem, Button, Text} from '@chakra-ui/react'
+import {Flex, Img, Menu, MenuButton, MenuList, MenuItem, Button, Text, HStack} from '@chakra-ui/react'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useTraceEvents } from '../hooks/useTraceEvents'
@@ -6,8 +6,14 @@ import MUIDataTable from "mui-datatables";
 import { ethers } from 'ethers'
 import { useContract, useProvider} from 'wagmi'
 import { contractABIInterface } from '../abi/contractInterface'
+import { useState } from 'react'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Table = () => {
+  // Usestate step
+  const [step, setStep] = useState(1)
+
   // Setup Wagmi Hooks
   const provider = useProvider();
 
@@ -28,7 +34,7 @@ const Table = () => {
 
   // Create data array for MUI table
   const tableData = events.data?.filter((event) => {
-    return event.step === 1;
+    return event.step === step;
   });
 
   const walletSigner = new ethers.Wallet(signerPK, provider);
@@ -40,12 +46,24 @@ const Table = () => {
     signerOrProvider: walletSigner
   })
   
-  const changeStep = async (itemID:Number, halal:Boolean)=>{
+  // Handle changeStep function
+  const changeStep = async (step: number, itemID:Number, halal:Boolean)=>{
     try{
-      const result = await contractWrite.step2(itemID, "William", halal)
-      console.log(result)
-    } catch(err){
-      console.log(err)
+      switch(step){
+        case 1:
+          await contractWrite.step2(itemID, "William", halal)
+          break
+        case 2:
+          await contractWrite.step3(itemID, "William", halal)
+          break
+        case 3:
+          await contractWrite.step4(itemID, "William", halal)
+          break
+      } 
+      toast.success(`Step is successfully changed!`)
+    } catch(error:any){
+      console.log(error)
+      toast.error(`${error}`)
     }
   }
 
@@ -89,6 +107,7 @@ const Table = () => {
           })
           return (
             <Flex justifyContent={'center'} alignItems='center'>
+              {step === 1 && 
               <Button 
                 disabled={itemCount.length > 1 ? true : false}
                 size={'sm'} 
@@ -96,10 +115,37 @@ const Table = () => {
                 textColor='white' 
                 borderRadius={'10px'} 
                 _hover={{bgColor: "#1a4173"}} 
-                onClick={()=>changeStep(rowIndex.rowData[1], rowIndex.rowData[4])}
+                onClick={()=>changeStep(step, rowIndex.rowData[1], rowIndex.rowData[4])}
               >
                 Change Step
               </Button>
+              }
+              {step === 2 && 
+              <Button 
+                disabled={itemCount.length > 2 ? true : false}
+                size={'sm'} 
+                bgColor='#172a42' 
+                textColor='white' 
+                borderRadius={'10px'} 
+                _hover={{bgColor: "#1a4173"}} 
+                onClick={()=>changeStep(step, rowIndex.rowData[1], rowIndex.rowData[4])}
+              >
+                Change Step
+              </Button>
+              }
+              {step === 3 && 
+              <Button 
+                disabled={itemCount.length > 3 ? true : false}
+                size={'sm'} 
+                bgColor='#172a42' 
+                textColor='white' 
+                borderRadius={'10px'} 
+                _hover={{bgColor: "#1a4173"}} 
+                onClick={()=>changeStep(step, rowIndex.rowData[1], rowIndex.rowData[4])}
+              >
+                Change Step
+              </Button>
+              }
             </Flex>
           )
         }
@@ -125,9 +171,17 @@ const Table = () => {
           </MenuList>
         </Menu> 
         <Flex alignItems={'center'}>
-          <Text>William Chandra</Text>
+          <Text textColor='white'>William Chandra</Text>
         </Flex>
       </Flex>
+      <Flex justifyContent='center' alignItems={'center'}> 
+        <HStack spacing={10}>
+          <Button size={'sm'} bgColor={'#21325E'} textColor='white' _hover={{bgColor: "#5D8BF4"}} onClick={()=>{setStep(1)}}>Step 1</Button>
+          <Button size={'sm'} bgColor={'#21325E'} textColor='white' _hover={{bgColor: "#5D8BF4"}} onClick={()=>{setStep(2)}}>Step 2</Button>
+          <Button size={'sm'} bgColor={'#21325E'} textColor='white' _hover={{bgColor: "#5D8BF4"}} onClick={()=>{setStep(3)}}>Step 3</Button>
+        </HStack>
+      </Flex>
+      <br />
       <MUIDataTable
         title={"Employee List"}
         data={tableData}
@@ -138,6 +192,18 @@ const Table = () => {
           elevation: 0,
           sort: false
         }}
+      />
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        style={{width: "350px"}}
       />
     </Flex>
   );

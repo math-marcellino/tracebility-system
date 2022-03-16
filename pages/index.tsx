@@ -67,8 +67,6 @@ const Home: NextPage = () => {
     }
   }
 
-  
-
   return (
     <Flex height={'100vh'} justify='center' align={'center'} direction={'column'} bgColor={'#1a202c'}>
       <Head>
