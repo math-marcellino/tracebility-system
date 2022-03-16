@@ -27,7 +27,9 @@ const Table = () => {
   const events = useTraceEvents({ contractAddress: contractAddress, provider: provider})
 
   // Create data array for MUI table
-  const tableData = events.data;
+  const tableData = events.data?.filter((event) => {
+    return event.step === 1;
+  });
 
   const walletSigner = new ethers.Wallet(signerPK, provider);
 
@@ -38,7 +40,7 @@ const Table = () => {
     signerOrProvider: walletSigner
   })
   
-  const changeStep = async (step:Number, itemID:Number, halal:Boolean)=>{
+  const changeStep = async (itemID:Number, halal:Boolean)=>{
     try{
       const result = await contractWrite.step2(itemID, "William", halal)
       console.log(result)
@@ -84,7 +86,7 @@ const Table = () => {
         customBodyRender: (dataIndex:any, rowIndex:any) => {
           return (
             <Flex justifyContent={'center'} alignItems='center'>
-              <Menu>
+              {/* <Menu>
                 <MenuButton as={Button} size={'sm'} bgColor='#172a42' textColor='white' borderRadius={'10px'} _hover={{bgColor: "#1a4173"}}>
                   Step Menu
                 </MenuButton>
@@ -93,7 +95,17 @@ const Table = () => {
                   <MenuItem _hover={{bgColor: 'blackAlpha.100'}} onClick={()=>{changeStep(3, rowIndex.rowData[1], rowIndex.rowData[4])}}>Step 3</MenuItem>
                   <MenuItem _hover={{bgColor: 'blackAlpha.100'}} onClick={()=>{changeStep(4, rowIndex.rowData[1], rowIndex.rowData[4])}}>Step 4</MenuItem>
                 </MenuList>
-              </Menu>
+              </Menu> */}
+              <Button 
+                size={'sm'} 
+                bgColor='#172a42' 
+                textColor='white' 
+                borderRadius={'10px'} 
+                _hover={{bgColor: "#1a4173"}} 
+                onClick={()=>changeStep(rowIndex.rowData[1], rowIndex.rowData[4])}
+              >
+                Change Step
+              </Button>
             </Flex>
           )
         }

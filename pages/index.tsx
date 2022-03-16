@@ -67,6 +67,8 @@ const Home: NextPage = () => {
     }
   }
 
+  
+
   return (
     <Flex height={'100vh'} justify='center' align={'center'} direction={'column'} bgColor={'#1a202c'}>
       <Head>
@@ -115,11 +117,6 @@ const Home: NextPage = () => {
                     <option value='false'>Non Halal</option>
                   </Select>
                 </Flex>
-                {/* <Flex flex={{base: 1}} justify={'space-between'} pr={3} align={'center'} bgColor="#20242A" borderRadius={20}>
-                  <InputGroup>
-                    <Input textColor="#B2B9D2" type="text" border={'none'} focusBorderColor={'none'} placeholder={'Pemverifikasi'} {...register('_verifier', {required: "Pemverifikasi Harap Diisi!"})}></Input>
-                  </InputGroup>
-                </Flex> */}
                 <Button isLoading={submitting} colorScheme={'blue'} type="submit" borderRadius={20}>Confirm</Button>
               </Stack>
             </form>
