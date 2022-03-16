@@ -84,19 +84,13 @@ const Table = () => {
       label: "Change Step",
       options: {
         customBodyRender: (dataIndex:any, rowIndex:any) => {
+          const itemCount = events.data?.filter((event) => {
+            return event.itemID === rowIndex.rowData[1];
+          })
           return (
             <Flex justifyContent={'center'} alignItems='center'>
-              {/* <Menu>
-                <MenuButton as={Button} size={'sm'} bgColor='#172a42' textColor='white' borderRadius={'10px'} _hover={{bgColor: "#1a4173"}}>
-                  Step Menu
-                </MenuButton>
-                <MenuList bgColor={'white'}>
-                  <MenuItem _hover={{bgColor: 'blackAlpha.100'}} onClick={()=>{changeStep(2, rowIndex.rowData[1], rowIndex.rowData[4])}}>Step 2</MenuItem>
-                  <MenuItem _hover={{bgColor: 'blackAlpha.100'}} onClick={()=>{changeStep(3, rowIndex.rowData[1], rowIndex.rowData[4])}}>Step 3</MenuItem>
-                  <MenuItem _hover={{bgColor: 'blackAlpha.100'}} onClick={()=>{changeStep(4, rowIndex.rowData[1], rowIndex.rowData[4])}}>Step 4</MenuItem>
-                </MenuList>
-              </Menu> */}
               <Button 
+                disabled={itemCount.length > 1 ? true : false}
                 size={'sm'} 
                 bgColor='#172a42' 
                 textColor='white' 
