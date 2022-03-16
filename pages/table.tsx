@@ -27,17 +27,7 @@ const Table = () => {
   const events = useTraceEvents({ contractAddress: contractAddress, provider: provider})
 
   // Create data array for MUI table
-  const tableData:any = events.data?.map((item) => {
-    const date = new Date(item.args?._time.toNumber() * 1000)
-    const formattedDate = new Intl.DateTimeFormat("en-US", { hour: "numeric", day: "numeric", month: "short", year: "numeric", minute: "numeric" }).format(date);
-    return {
-      date: formattedDate,
-      itemID: item.args?._itemID.toNumber(),
-      step: item.args?._step.toNumber()+1,
-      verifiers: item.args?.verifiers,
-      halal: item.args?._halal
-    }
-  })
+  const tableData = events.data;
 
   const walletSigner = new ethers.Wallet(signerPK, provider);
 
@@ -48,14 +38,14 @@ const Table = () => {
     signerOrProvider: walletSigner
   })
   
-  // const changeStep = async (step:Number, itemID:Number, halal:Boolean)=>{
-  //   try{
-  //     const result = await contractWrite.step2(itemID, "William", halal)
-  //     console.log(result)
-  //   } catch(err){
-  //     console.log(err)
-  //   }
-  // }
+  const changeStep = async (step:Number, itemID:Number, halal:Boolean)=>{
+    try{
+      const result = await contractWrite.step2(itemID, "William", halal)
+      console.log(result)
+    } catch(err){
+      console.log(err)
+    }
+  }
 
   const columns = [
     {
@@ -87,28 +77,28 @@ const Table = () => {
         }
       }
     },
-    // {
-    //   name: "stepButton",
-    //   label: "Change Step",
-    //   options: {
-    //     customBodyRender: (dataIndex:any, rowIndex:any) => {
-    //       return (
-    //         <Flex justifyContent={'center'} alignItems='center'>
-    //           <Menu>
-    //             <MenuButton as={Button} size={'sm'} bgColor='#172a42' textColor='white' borderRadius={'10px'} _hover={{bgColor: "#1a4173"}}>
-    //               Step Menu
-    //             </MenuButton>
-    //             <MenuList bgColor={'white'}>
-    //               <MenuItem _hover={{bgColor: 'blackAlpha.100'}} onClick={()=>{changeStep(2, rowIndex.rowData[1], rowIndex.rowData[4])}}>Step 2</MenuItem>
-    //               <MenuItem _hover={{bgColor: 'blackAlpha.100'}} onClick={()=>{changeStep(3, rowIndex.rowData[1], rowIndex.rowData[4])}}>Step 3</MenuItem>
-    //               <MenuItem _hover={{bgColor: 'blackAlpha.100'}} onClick={()=>{changeStep(4, rowIndex.rowData[1], rowIndex.rowData[4])}}>Step 4</MenuItem>
-    //             </MenuList>
-    //           </Menu>
-    //         </Flex>
-    //       )
-    //     }
-    //   }
-    // }
+    {
+      name: "stepButton",
+      label: "Change Step",
+      options: {
+        customBodyRender: (dataIndex:any, rowIndex:any) => {
+          return (
+            <Flex justifyContent={'center'} alignItems='center'>
+              <Menu>
+                <MenuButton as={Button} size={'sm'} bgColor='#172a42' textColor='white' borderRadius={'10px'} _hover={{bgColor: "#1a4173"}}>
+                  Step Menu
+                </MenuButton>
+                <MenuList bgColor={'white'}>
+                  <MenuItem _hover={{bgColor: 'blackAlpha.100'}} onClick={()=>{changeStep(2, rowIndex.rowData[1], rowIndex.rowData[4])}}>Step 2</MenuItem>
+                  <MenuItem _hover={{bgColor: 'blackAlpha.100'}} onClick={()=>{changeStep(3, rowIndex.rowData[1], rowIndex.rowData[4])}}>Step 3</MenuItem>
+                  <MenuItem _hover={{bgColor: 'blackAlpha.100'}} onClick={()=>{changeStep(4, rowIndex.rowData[1], rowIndex.rowData[4])}}>Step 4</MenuItem>
+                </MenuList>
+              </Menu>
+            </Flex>
+          )
+        }
+      }
+    }
   ]
 
   return (
