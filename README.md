@@ -32,11 +32,15 @@ Pada setiap halaman yang ada pada website, terdapat suatu text berupa nama user 
 ![image](https://user-images.githubusercontent.com/79161142/157717609-f0b56b80-6ab5-48ed-b6b3-601064af3e37.png)
 
 ### 4. Tracing Data Supply Chain
-Pada halaman table, terdapat sebuah tabel yang menampilkan log dari seluruh transaksi penambahan data pada smart contract yang pernah terjadi.
+Pada halaman table, terdapat sebuah tabel yang menampilkan log dari seluruh transaksi penambahan data pada smart contract yang pernah terjadi. Tabel tersebut terbagi menjadi 3 step yaitu table step1, table step2, dan table step3. Sehingga setiap table tersebut menampilkan berdasarkan step yang dipilih.
 
-![image](https://user-images.githubusercontent.com/79161142/157717743-c53a3566-0657-4bde-95f8-762fa6aac42f.png)
+![image](https://user-images.githubusercontent.com/79161142/158772206-eb492fde-9c46-4faf-9da6-ae5dfdd9f389.png)
 
-Note: Saat ini tabel masih menampilkan hanya ID makanan saja, tetapi untuk kedepannya smart contract akan diupdate agar dapat langsung menampilkan nama makanannya.
+### 5. Mengubah Step
+Pada data tabel, terdapat suatu kolom yang berisi button "Change Step". Button ini bertujuan untuk mengubah step dari "batch makanan" menjadi ke step selanjutnya. Ketika step pada suatu "batch makanan" telah diubah, button "Change step" akan ter-disabled dan data akan tampil pada table step selanjutnya. 
+
+![image](https://user-images.githubusercontent.com/79161142/158772845-4d7479c6-5f1a-40fc-8900-170a92742abb.png)
 
 ## TODO
-#### 1. Menambahkan kolom berissi tombol `Update` pada tabel untuk data yang memiliki step 0-2 (karena step 3 merupakan tujuan akhir dari supply chain). Ketika tombol update ditekan, maka akan ditampilkan sebuah form untuk mengupdate kehalalan dari item tertentu beserta dengan pemverifikasinya.
+#### 1. Menambahkan pesan Error bila sistem gagal menjalankan suatu fungsi. 
+#### 2. Melengkapi buku "Blockchain"
